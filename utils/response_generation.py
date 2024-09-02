@@ -106,8 +106,7 @@ def chat_completion(
                 }], 
                 temperature=temperature,
                 seed=1234,
-                max_tokens=max_tokens,
-                response_format={"type": "json_object"}
+                max_tokens=max_tokens
             )
             response = llm_response.choices[0].message.content
             break
@@ -115,8 +114,6 @@ def chat_completion(
             response = '{"response": [{"type": "text", "content": "Oops! It looks like our AI assistant is taking an unexpected break. We\'re having a bit of trouble generating a response right now. This could be due to temporary issues with our AI service or high demand. You can wait a moment and try your request again. If the problem persists, please try again later or contact our support team. We apologize for the inconvenience and appreciate your patience!"}]}'
     print(response)
     
-    # get the reason for stopping the text generation
-    output = json.loads(response)
     # print(output)
     try:
         tokens = llm_response.usage.completion_tokens
@@ -124,7 +121,7 @@ def chat_completion(
         tokens = -1
     words = len(response.split())
 
-    return output, tokens, words
+    return response, tokens, words
 
 def chatbot(
     api_key=None, model="", prompt=""

@@ -24,7 +24,7 @@ def load_prompts():
     f.close()
 
     # Question-Answering Prompt
-    with open("prompts/qna_input.txt", "r") as f:
+    with open("prompts/qna_prompt_fs.txt", "r") as f:
         qna_input = f.read()
 
     f.close()
@@ -186,7 +186,7 @@ def main():
                             filtered_results = st.session_state["db"].search(
                                 collection_name="demo_collection",        
                                 data=user_query_vectors,               
-                                limit=5,                           
+                                limit=10,                           
                                 output_fields=["text", "source", "page"],
                             )
 
@@ -195,7 +195,7 @@ def main():
                             for chunk in filtered_results[0]:
                                 context += chunk_template.format(page=chunk["entity"]["page"]+1, content=chunk["entity"]["text"])
                             
-                        st.session_state["prompt"] = qna_instructions_example + qna_input.format(__texts__=context, __user_query__=user_input)
+                        st.session_state["prompt"] = qna_input.format(__texts__=context, __user_query__=user_input)
                             
                         # Generate Response
                         response, _, _= response_generation.chat_completion(
@@ -205,22 +205,8 @@ def main():
                         )   
                         #-----------------------------------------------------------------------------------------
 
-                      
-                    # Save Input & Output & Retrieval Results
-                    # f = open("logs/input.txt", "w")
-                    # f.write(st.session_state["prompt"])
-                    # f.close()
-
-                    # f = open("logs/output.txt", "w")
-                    # f.write(json.dumps(response))
-                    # f.close()
-
-                    try:
-                        response_generation.response_with_plots(response, True)
-                    except:
-                        st.rerun()
-                        st.markdown(f"Encountered an error while generating plots - Generating only text output")
-                        response_generation.text_response(response, st.session_state["openai_api_key"], llm_model, False)
+                    
+                    st.markdown(response, unsafe_allow_html=True)
 
                     # Store Response
                     st.session_state.messages.append({"role": "assistant", "content": response})
@@ -229,13 +215,7 @@ def main():
                 if "messages" in st.session_state:
                     for message in st.session_state.messages:
                         with st.chat_message(message["role"]):
-                            if message["role"] == "assistant":
-                                try:
-                                    response_generation.response_with_plots(message["content"], False)
-                                except:
-                                    response_generation.text_response(message["content"], st.session_state["openai_api_key"], llm_model, False)
-                            else:
-                                st.markdown(message["content"], unsafe_allow_html=False)
+                            st.markdown(message["content"], unsafe_allow_html=False)
                         
                             
         else:
