@@ -9,7 +9,7 @@ def data_upload():
     """
 
     input_choice = st.radio(
-        label="###### :blue[Please upload the file to get started]", options=("Document", "File Directory"), 
+        label="###### :blue[Please upload the file to get started]", options=("Document",), 
         disabled="openai_api_key" not in st.session_state
 
     )
@@ -17,7 +17,7 @@ def data_upload():
     if input_choice == "Document":
         with st.expander("📁 __Documents__", expanded=True):
             uploaded = st.file_uploader(
-                label="Select File", type=['pdf', 'csv'], on_change=clear,
+                label="Select File", type=['pdf'], on_change=clear,
                 disabled="openai_api_key" not in st.session_state
             )
     # Disabling multiple file uploads
