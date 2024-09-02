@@ -40,7 +40,7 @@ st.cache(persist=True)
 def check_key():
     col, _, = st.columns([2, 4])
     if input_key := col.text_input(
-        "###### :blue[Please provide OpenAI API Key]", max_chars=80, type="password",
+        "###### :blue[Please provide OpenAI API Key]", max_chars=200, type="password",
         key="openai_input_key"
     ):
         
